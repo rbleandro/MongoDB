@@ -1,0 +1,45 @@
+db.goo.insert({_id:4}) 
+db.goo.insert({_id:5}) 
+
+
+db.goo.find({y:false})
+
+//range query (greater than and less than)
+db.goo.find({_id:{$gt:1,$lt:7}})
+
+//adding a key to the document
+db.goo.save({_id:4,x:2})
+//updating document on goo collection (full replace). 'x' key disappears
+db.goo.save({_id:4,y:false})
+
+//recreates key 'x' while keeping 'y' key
+db.goo.update({_id:4},{$set:{x:1}})
+db.goo.update({_id:4},{$set:{y:2}})
+
+//increment value of key 'x' given the condition (where y=2)
+db.goo.update({y:2},{$inc:{x:1}})
+
+//drop document with _id = 4
+db.goo.remove({_id:4})
+
+//drop entire collection
+db.goo.drop()
+
+show collections
+show databases
+
+//setando uma variável para manipular documentos posteriormente
+var p = {name:'dude3',born:ISODate("1984-04-02"),likes:['jogging','games'],points:1}
+db.peeps.save(p)
+db.peeps.find()
+
+//extraindo o timestamp de um ObjectId de um documento
+ObjectId("112233440000000000000000").getTimestamp()
+
+//sorting
+db.peeps.find().sort({born:-1}) //ordenacao decrescente
+db.peeps.find().sort({born:-1,name:1}) //ordenacao composta 
+
+//limiting results (with sort)
+db.peeps.find().limit(1).sort({name:1})
+

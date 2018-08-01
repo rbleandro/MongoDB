@@ -1,0 +1,15 @@
+//backing up a single db
+mongodump --db mongo_hom_pontofrio
+
+//backing up a single collection
+mongodump --db testA --collection one
+
+//// IMPORTANT!! THE DATABASE 'LOCAL' MUST BE BACKED UP EXPLICITY.
+//// IMPORTANT!! ALWAYS BACKUP THE 'ADMIN' DATABASE. WITHOUT IT, IT IS IMPOSSIBLE TO USE MONGO
+//// ALWAYS TEST YOUR BACKUPS!!
+
+mongodump --username agent --password 1234 --db testA --out d:\temp\bakup
+
+// to secure database bakcups, enable SSL for mongo
+// secure backup files and folders separately
+

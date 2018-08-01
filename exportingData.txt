@@ -1,0 +1,21 @@
+//exportando o conteúdo da coleção
+mongoexport --db market --collection catalog
+
+//exportando o conteúdo da coleção para um arquivo
+mongoexport --db market --collection catalog --out out.json
+
+//exportando apenas o campo SKU da collection indicada
+mongoexport --db market --collection catalog --fields SKU
+
+//exportando para o formato csv. Neste caso apenas os campos especificados serão exportados. O parametro --fields is required here.
+mongoexport --db market --collection catalog --fields SKU --type=csv
+
+//exporting strings in a more readable format
+mongoexport --db market --collection catalog --fields _id,Name.First,Name.Last --type=csv
+
+//exporting based in a query
+mongoexport --db market --collection catalog --query "{id:{$gt:2}}"
+
+//limiting the export to an explicit number of documents. If this number is reached, a new file will be generated and filled up to this number
+mongoexport --skip 0 --limit 2 --sort "{_id:1}" --db market --collection catalog
+

@@ -1,0 +1,14 @@
+//restoring a dump of full server. This king of restore does not replace the data. It only tries to append data present in the backup
+mongorestore --host myserver --port  27017 backup\dump
+
+//in the case below we specify the --drop parameter, telling mongo to fully replace the data with the data present in the backup
+mongorestore --drop backup\dump
+
+//restore a single collection, replacing it
+mongorestore --drop --collection two --db testA --out backup\dump\testA\two.bson
+
+//restore database to a new database
+mongorestore --db restoredA backup\dump\testA
+
+//point in time restore with oplog. Attention! This will only work if the original backup was made with --oplog option
+mongorestore --oplogReplay --drop backup\dump

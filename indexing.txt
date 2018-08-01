@@ -1,0 +1,31 @@
+//creating a multi column index
+db.messages.ensureIndex({'from.country':1,'from.number':1,time:1})
+
+//* in mongo, index usage follows the same rules of relational databases
+
+//* para obter mais detalhes sobre o plano de execução, use explain(true). Isso fará com que o explain traga bem mais informações
+//* nos planos de execução, COLLSCAN é semelhante ao TABLE SCAN; enquanto IDXSCAN é semelhante ao INDEX SEEK. 
+//* os valores nReturned e totalDocsExamined nos dão dicas de como estão as estatísticas da tabela/índice. O valor de executionTimeMilis não inclui o tempo para transferir os resultados via rede
+//* os valores de saveState e restoreState nos dizem quantas vezes a consulta teve que render (yield) os recursos para outros processos
+//* convering index concept also exist in Mongo. the key totalDocsExamined of explain command tells us how many documents had to touched by the optmizer. If a convering index exists, this number should be zero.
+
+//creating unique index
+db.customers.ensureIndex({number:1},{unique:true})
+
+//creating unique sparse index. This is good when we must store values initially as null and then update them later.
+db.customers.dropIndex('number_1')
+db.customers.ensureIndex({number:1},{unique:true, sparse:true})
+
+//*within sharding, unique indexes do not work across shards
+
+//creating TTL indexes
+db.messages.ensureIndex({time:1},{expireAfterSeconds: 60*60*24*90})
+
+//* only one TTL index per collection
+
+//rebuilds the index of the collection
+db.myCollection.reIndex()
+
+//* dbRepair should not be necessary in a healthy database
+
+//

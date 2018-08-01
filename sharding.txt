@@ -1,0 +1,22 @@
+//em configurações de shard, a aplicação conecta com o mongos que redireciona a requisição para o shard que contém o dado
+//cada shard contém um range de valores. A distribuição dos dados é feita com base em uma sharding key, que é escolhida no momento da configuração
+//é uma boa prática configurar replica set entre os shards como forma de garantir alta disponibilidade e durabilidade
+//é também recomendado trabalhar com 3 config servers para redundancia. É importante certificar que os config servers conseguem falar com todos os membros da topologia
+//só habilite sharding se realmente necessário e se você tem problemas de escalabilidade. Esgote todas as opções antes de implementar sharding. Sharding é um caminho sem volta. Não é possível desabilitar sharding ou mudar a chave de sharding.
+//shard keys devem ser escolhidas de forma a evitar hot spots de dados, onde um shard tem muitos documentos e outro não tem nenhum. Os dados devem ser o mais bem distribuídos o possível. A escolha da chave depende de fatores como access pattern e data granularity.
+//Para shard keys, evite usar ever increasing timestamps, pois eles criam hot spots. Caso necessário utilize um hashed field
+//Caso necessário, faça migração de dados entre chunks ou "tagged shards" para garantir baixa latencia no acesso a dados localizados. Por exemplo, os dados europeus podem ficar em um servidor que contém o shard localizado na Europa. Dessa forma, garantimos que o acesso a esses dados será mais rápido. Tagged shards são baseados em valores específicos de fields específicos.
+//Perguntas antes de decidir por sharding: Will it solve a real issue? Current Capacity? Application ready for it? What is the complexity involved? Infrastructure cost? When shoud I?
+//Sharding só deve ser uma opção quando o seu working set não couber na quantidade disponível de memória RAM, quando você tem um I/O bottleneck.
+
+mongos --configdb configServer1:27017, configServer2:27018,configServer3:27019
+// inside the shell:
+mongos> sh.addShard('mongodServer:port')
+//o sharding deve ser habilitado por banco e por coleção
+mongos> sh.enableSharding('dbName')
+mongos> sh.shardCollection('dbName.coll', {'field':1})
+
+//enabling a shard as a member of a replica set
+sh.addShard("r1/myserver:27018")
+
+//sh.shardCollection("dbName.collectionName",{"fieldName": "hashed"})

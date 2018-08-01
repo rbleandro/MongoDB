@@ -1,0 +1,17 @@
+use admin
+db.shutdownServer()
+
+--or
+sudo kill 4775
+
+tail -n 24 /var/log/mongodb/mongod.log --verifica o log do banco para ver se o "signal 15" existe
+ls -lh /var/lib/mongodb/ -- o arquivo mongod.lock tem que estar zerado
+
+-- em caso de unclean shutdown reinicie o mongo em uma porta diferente da usual para que o recovery aconteça
+sudo mongod --port 40000 --dbpath /var/lib/mongodb
+
+--do not use "kill -9" para parar o serviço do mongo
+
+/****** WINDOWS *******/
+
+net stop mongod -- do not use task manager or "taskkill"

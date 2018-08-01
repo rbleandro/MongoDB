@@ -1,0 +1,19 @@
+//importação de dados do arquivo mongoimport.seed.json
+mongoimport --db market --collection catalog mongoimport.seed.json
+
+//importação de dados com Merge (insere o que é novo e atualiza o que já existe no destino)
+mongoimport --db market --collection catalog --upsert mongoimport.seed.json 
+
+//Customizando a importação de dados para fazer o Match por um campo específico (neste caso, 'SKU')
+mongoimport --db market --collection catalog --upsert --upsertFields SKU mongoimport.seed.json 
+
+//importando csv
+mongoimport --type csv --db market --collection catalog --headerline mongoimport.seedA.csv
+
+//mapeando os campos do csv manualmente
+mongoimport --type csv --db market --collection catalog --fields _id,SKU,Price mongoimport.seedB.csv
+
+//passando a lista de campos através de um arquivo
+mongoimport --type csv --db market --collection catalog --fieldFile mongoimport.fieldsA.txt mongoimport.seedB.csv
+
+

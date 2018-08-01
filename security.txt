@@ -1,0 +1,22 @@
+//replicação deve ser criptografada com SSL
+//use encryption at rest to provide security to data in the disk (data files). You can use features like bit locker
+//certifique-se que as permissões e autorizações estão configuradas corretamente
+//como em bancos transacionais, mongo também possui o conceito de roles para administração de permissões e acessos
+//para criar e gerenciar usuários, deve-se habilitar o authorization config no servidor. Por padrão essa config é desabilitada.
+//we can have multiple users with the same name as long as they are in different databases. When you have this situation, you have to specify which database you wish to connect using the parameter --authenticationDatabase when conecting to Mongo
+
+//mostra informações do usuário corrente
+use admin
+usr = { "user":"superUserAdmin","pwd":"1234","roles":[{"role":"userAdminAnyDatabase","db":"admin"}]}
+db.createUser(usr)
+db.createUser({'user':'bob','pwd':'1234','roles':['read']})
+show users
+
+mongo --username superUserAdmin --password 1234 myserver/admin
+
+//to logout the current user
+db.lougout()
+//to authenticate with a specific user
+db.auth('webApp','1234')
+//to grant access to a role within the database
+db.grantRolesToUser('bob':[{role:'read',db:'other'}])

@@ -1,0 +1,45 @@
+//how many data center are involved? How is latency between them? To which replica member are the applications pointing to?
+//Is the application write heavy or read heavy?
+//how is the oplog configured in terms of space. Is the space enough for the server workload?
+//are there any arbiters configured?
+//how many voting members are there?
+//for a primary to be elected, we have to have more than 50% of the voting members online. if that does not happen, all replicas will be on secondary read-only mode
+//how are priorities configured between the members? You can configure priority to set the best hardware server to be the primary whenever possible
+//Is there any freeze or hidden instance configured?
+//Hidden members do not receive connections from applications, but can still vote for the primary. You can set up a hidden server for contingency
+//is chaining configured? Mongodb manages chaining automatically. The "syncing to" values in the configuration can change according to the dynamics of the topology
+//How are the "write concerns" configured in the replica members? Acknowledged, Unacknowledged or journaled? It is important to prototype and measure response times when configuring "write concerns". Weigh in businness and DR requirements as well. By default, Acknowledged write concern is enabled in mongodb.
+
+
+//para pegar o status da replicação:
+rs.status() //optime represents the last operation. optimeTimestamp is more accurate
+
+//to connect to a secondary in the current shell instance:
+db = connect("myserver:30002/test")
+
+//to read from the secondary:
+db.setSlaveOk()
+
+//to make a primary step down for a period of time:
+rs.stepDown(3*60)
+
+//to configure priority between replica members:
+var cfg = rs.config()
+cfg.members[0].priority = 1
+rs.reconfig(cfg)
+
+//to freeze a replica member to stop it from becoming the primary:
+rs.freeze(5 * 60)
+
+//to configure a hidden member:
+var cfg = rs.config()
+cfg.members[0].priority = 0
+cfg.members[2].hidden = true
+rs.reconfig(cfg)
+
+//demo of write concern configuration:
+db.demo.insert({x:'hi',{writeConcern: {w:'majority'}})
+db.demo.insert({x:'hi',{writeConcern: {w:0}}) 
+db.demo.insert({x:'hi',{writeConcern: {w:1}}) //default write concern
+db.demo.insert({x:'hi',{writeConcern: {w:2, j:true}})
+db.demo.insert({x:'hi',{writeConcern: {w:3, wtimeout:2000}}) //here I configured the timeout for the operation. It will try to replicate my insert to 3 of the members and it will wait up to 2 seconds for that to happen.
